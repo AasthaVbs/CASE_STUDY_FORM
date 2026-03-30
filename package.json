@@ -1,0 +1,42 @@
+{
+  "name": "case-study-form-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CRM-style dynamic forms (Vite + React) with admin export and API persistence",
+  "scripts": {
+    "dev": "kill-port 3001 && concurrently -k -n server,vite -c blue,green \"npm run server\" \"vite\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node server/index.js",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.0",
+    "bcryptjs": "^3.0.3",
+    "bootstrap": "^5.3.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.21.0",
+    "multer": "^2.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet": "^6.1.0",
+    "react-router-dom": "^6.28.0",
+    "react-toastify": "^11.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
+    "kill-port": "^2.0.1",
+    "sass": "^1.89.2",
+    "sass-embedded": "^1.98.0",
+    "vite": "^6.3.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

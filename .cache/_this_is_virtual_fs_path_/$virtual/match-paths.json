@@ -1,0 +1,6 @@
+[
+    {
+        "path": "/form/[slug]/",
+        "matchPath": "/form/:slug"
+    }
+]

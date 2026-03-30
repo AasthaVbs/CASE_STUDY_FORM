@@ -1,0 +1,452 @@
+/**
+ * Case study / CRM reference styles — replace or extend this file with your full design.
+ * Class names below are stable; map your selectors to .crm-ref, .crm-ref__*, etc.
+ */
+
+.crm-ref {
+  --crm-ref-radius: 14px;
+  --crm-ref-border: rgba(148, 163, 184, 0.16);
+  --crm-ref-bg: linear-gradient(180deg, rgba(17, 24, 35, 0.88) 0%, rgba(15, 23, 42, 0.86) 100%);
+  --crm-ref-text: #fafafa;
+  --crm-ref-muted: #94a3b8;
+  --crm-ref-accent: #3b82f6;
+  --crm-ref-input-bg: rgba(10, 14, 20, 0.72);
+  --crm-ref-shadow: 0 24px 56px rgba(2, 8, 23, 0.42);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 18px;
+  background: var(--crm-ref-bg);
+  border: 1px solid var(--crm-ref-border);
+  border-radius: var(--crm-ref-radius);
+  box-shadow: var(--crm-ref-shadow);
+  color: var(--crm-ref-text);
+  font: inherit;
+}
+
+.crm-ref__header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crm-ref__header-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 1.25rem 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .crm-ref__header-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.crm-ref__title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+.crm-ref__lead {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--crm-ref-muted);
+  line-height: 1.55;
+}
+
+.crm-ref__form {
+  margin: 0;
+}
+
+.crm-ref__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.crm-ref__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(10, 14, 20, 0.36);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.crm-ref__field--list .crm-ref__list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.crm-ref__list-item {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.55rem;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+}
+
+.crm-ref__list-item--split {
+  gap: 0.65rem;
+}
+
+.crm-ref__list-item-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 0.75rem 1rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .crm-ref__list-item-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.crm-ref__list-remove {
+  justify-self: start;
+  margin-top: 0.15rem;
+}
+
+.crm-ref__field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.crm-ref__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--crm-ref-muted);
+}
+
+.crm-ref__helper {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--crm-ref-muted);
+}
+
+.crm-ref__control {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: var(--crm-ref-input-bg);
+  color: var(--crm-ref-text);
+  font: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.crm-ref__control:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.crm-ref__control:disabled,
+.crm-ref__control[readonly] {
+  opacity: 0.85;
+  cursor: default;
+}
+
+textarea.crm-ref__control {
+  min-height: 120px;
+  resize: vertical;
+}
+
+select.crm-ref__control {
+  cursor: pointer;
+}
+
+.crm-ref__checkbox {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0;
+  flex-shrink: 0;
+  accent-color: var(--crm-ref-accent);
+}
+
+.crm-ref__checkbox-label {
+  font-size: 0.95rem;
+  color: var(--crm-ref-text);
+  line-height: 1.4;
+}
+
+.crm-ref__actions {
+  margin-top: 1.15rem;
+}
+
+.crm-ref__save-note {
+  margin: 0.55rem 0 0;
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.crm-ref__submit {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.65rem 1.35rem;
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  cursor: pointer;
+  min-width: 110px;
+  letter-spacing: 0.01em;
+  transition: filter 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35);
+}
+
+.crm-ref__submit:hover:not(:disabled) {
+  filter: brightness(1.07);
+  border-color: rgba(96, 165, 250, 0.75);
+}
+
+.crm-ref__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Preview / read-only */
+.crm-ref--preview {
+  padding: 18px;
+}
+
+.crm-ref__preview-title {
+  margin: 0 0 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crm-ref__dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.crm-ref__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.crm-ref__row:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 520px) {
+  .crm-ref__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.crm-ref__dt {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--crm-ref-muted);
+}
+
+.crm-ref__dd {
+  margin: 0;
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.crm-ref__preview-img {
+  display: block;
+  max-width: 100%;
+  max-height: 180px;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--crm-ref-border);
+  object-fit: contain;
+}
+
+.crm-ref__upload-err {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(220, 53, 69, 0.15);
+  border: 1px solid rgba(220, 53, 69, 0.45);
+  color: #ffb4bd;
+  font-size: 0.88rem;
+}
+
+.crm-ref__field--image .crm-ref__image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.crm-ref__file-input {
+  max-width: 100%;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--crm-ref-muted);
+  cursor: pointer;
+}
+
+.crm-ref__file-input::file-selector-button,
+.crm-ref__file-input::-webkit-file-upload-button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  margin-right: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28);
+  transition: filter 0.15s ease, border-color 0.15s ease;
+}
+
+.crm-ref__file-input:hover::file-selector-button,
+.crm-ref__file-input:hover::-webkit-file-upload-button {
+  filter: brightness(1.06);
+  border-color: rgba(96, 165, 250, 0.75);
+}
+
+.crm-ref__file-input:disabled::file-selector-button,
+.crm-ref__file-input:disabled::-webkit-file-upload-button {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.crm-ref__btn-add {
+  align-self: flex-start;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.5rem 1.05rem;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.32);
+  transition: filter 0.15s ease, border-color 0.15s ease;
+}
+
+.crm-ref__btn-add:hover:not(:disabled) {
+  filter: brightness(1.07);
+  border-color: rgba(96, 165, 250, 0.75);
+}
+
+.crm-ref__btn-add:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.crm-ref__image-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 480px) {
+  .crm-ref__image-row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+.crm-ref__thumb {
+  max-width: 160px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--crm-ref-border);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.crm-ref__image-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.crm-ref__btn-ghost {
+  align-self: flex-start;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: rgba(15, 23, 42, 0.65);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.crm-ref__btn-ghost:hover:not(:disabled) {
+  color: #ffffff;
+  border-color: rgba(96, 165, 250, 0.55);
+  background: rgba(30, 41, 59, 0.85);
+}
+
+.crm-ref__btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.crm-ref__image-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--crm-ref-muted);
+  line-height: 1.45;
+}
+
+.crm-ref__field--radio .crm-ref__label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.crm-ref__radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.crm-ref__radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--crm-ref-text);
+}
+
+.crm-ref__radio-option input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  accent-color: var(--crm-ref-accent);
+}

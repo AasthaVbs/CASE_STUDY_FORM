@@ -1,0 +1,18 @@
+/**
+ * Enforces unified app background after legacy stylesheets (style.css may use !important).
+ */
+html,
+body,
+#root {
+  background-color: #0a0e14 !important;
+  background-image: none !important;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
