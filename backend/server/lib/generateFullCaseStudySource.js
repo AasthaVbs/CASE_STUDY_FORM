@@ -17,7 +17,18 @@ function sanitizeComponentName(raw) {
 }
 
 function generateFullCaseStudySourceFile({ formSlug, submission, sourceFilePath }) {
-  const sourcePath = sourceFilePath || path.join(__dirname, `..`, `..`, `architecture-outservice-services.js`)
+  const explicitPath = sourceFilePath ? path.resolve(sourceFilePath) : ``
+  const candidatePaths = [
+    explicitPath,
+    // backend/server/lib -> backend/architecture-outservice-services.js
+    path.join(__dirname, `..`, `..`, `architecture-outservice-services.js`),
+    // backend/server/lib -> repo-root/architecture-outservice-services.js
+    path.join(__dirname, `..`, `..`, `..`, `architecture-outservice-services.js`),
+  ].filter(Boolean)
+  const sourcePath = candidatePaths.find((p) => fs.existsSync(p))
+  if (!sourcePath) {
+    throw new Error(`Template file not found: architecture-outservice-services.js`)
+  }
   const raw = submission?.data || {}
   const data = buildCaseStudyData(raw)
   applyImportMarkers(data, raw)
