@@ -1,6 +1,7 @@
 import React from "react"
 import { fieldKey } from "../../utils/fieldKey"
 import { apiUrl, authHeaders } from "../../utils/api"
+import { resolvePublicImageUrl } from "../../utils/caseStudyFieldHelpers"
 import "./reference.css"
 
 /**
@@ -89,13 +90,14 @@ export function ReferenceCaseStudyForm({
               display = opt ? opt.label || String(v) : String(v)
             }
             const pathStr = v === undefined || v === null ? `` : String(v)
-            const previewSrc =
+            const previewSrcRaw =
               pathStr &&
               (pathStr.startsWith(`/`) || /^https?:\/\//i.test(pathStr))
                 ? pathStr
                 : pathStr
                   ? `/images/case-study/${pathStr.replace(/^.*[/\\]/, ``)}`
                   : ``
+            const previewSrc = previewSrcRaw ? resolvePublicImageUrl(previewSrcRaw) : ``
             const showImg = f.type === `image` && previewSrc
             const extra = f.className ? ` ${f.className}` : ``
             return (
@@ -157,13 +159,14 @@ export function ReferenceCaseStudyForm({
             if (f.type === `image`) {
               const inputId = safeInputId(f, key)
               const pathVal = values[key] ?? ``
-              const thumbSrc =
+              const thumbSrcRaw =
                 pathVal &&
                 (String(pathVal).startsWith(`/`) || /^https?:\/\//i.test(String(pathVal)))
-                  ? pathVal
+                  ? String(pathVal)
                   : pathVal
                     ? `/images/case-study/${String(pathVal).replace(/^.*[/\\]/, ``)}`
                     : null
+              const thumbSrc = thumbSrcRaw ? resolvePublicImageUrl(thumbSrcRaw) : null
               return (
                 <div key={f.id || key} className={`crm-ref__field crm-ref__field--image${fieldClass}`}>
                   <label className="crm-ref__label" htmlFor={inputId}>

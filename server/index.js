@@ -37,11 +37,35 @@ const { uploadImage, publicUrlPath } = require(`./lib/uploadMiddleware`)
 const { seedIfEmpty, ensureDemoForm } = require(`./seed`)
 
 const app = express()
-const PORT = Number(process.env.API_PORT) || 3001
+const PORT = Number(process.env.API_PORT) || Number(process.env.PORT) || 3001
+const HOST = process.env.HOST || `0.0.0.0`
+
+if (process.env.TRUST_PROXY === `1` || process.env.TRUST_PROXY === `true`) {
+  app.set(`trust proxy`, 1)
+}
 
 const authRequired = authMiddleware({ optional: false })
 
-app.use(cors())
+function buildCorsOptions() {
+  const raw = process.env.CORS_ORIGINS
+  if (!raw || !String(raw).trim()) {
+    return { origin: true }
+  }
+  const allowed = String(raw)
+    .split(`,`)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return {
+    origin(origin, callback) {
+      if (!origin) return callback(null, true)
+      if (allowed.includes(`*`) || allowed.includes(origin)) return callback(null, true)
+      return callback(null, false)
+    },
+    credentials: true,
+  }
+}
+
+app.use(cors(buildCorsOptions()))
 app.use(express.json({ limit: `2mb` }))
 
 function canAccessSubmission(sub, user) {
@@ -521,8 +545,8 @@ async function main() {
   await seedIfEmpty()
   await ensureDemoForm()
   await ensureAdminUser()
-  app.listen(PORT, () => {
-    console.log(`API listening on http://localhost:${PORT}`)
+  app.listen(PORT, HOST, () => {
+    console.log(`API listening on http://${HOST}:${PORT}`)
     console.log(`MongoDB: ${process.env.MONGODB_URI || `mongodb://127.0.0.1:27017`} / ${process.env.MONGODB_DB || `case_study_crm`}`)
   })
 }

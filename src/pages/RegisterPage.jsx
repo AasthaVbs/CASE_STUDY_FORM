@@ -31,7 +31,7 @@ export function RegisterPage() {
   return (
     <AuthShell
       brandTitle="Create your workspace"
-      brandTagline="Register to save case studies, sync drafts, and access your dashboard."
+      brandTagline="Register here."
     >
       <Seo title="Register" />
       <div className="crm-auth-card crm-auth-card--premium">
@@ -39,10 +39,7 @@ export function RegisterPage() {
           ← Back to sign in
         </Link>
         <p className="crm-auth-card-lead">New account</p>
-        <p className="crm-auth-inline-hint">
-          Anyone can register as a user with a unique email. The administrator email from server configuration is for
-          sign-in only — use a different address here.
-        </p>
+       
         <form onSubmit={onSubmit} className="crm-auth-form">
           <AuthEmailField id="reg-email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <AuthPasswordField

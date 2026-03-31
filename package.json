@@ -5,10 +5,15 @@
   "description": "CRM-style dynamic forms (Vite + React) with admin export and API persistence",
   "scripts": {
     "dev": "kill-port 3001 && concurrently -k -n server,vite -c blue,green \"npm run server\" \"vite\"",
+    "dev:client": "vite",
+    "dev:api": "node server/index.js",
     "build": "vite build",
+    "build:client": "vite build",
     "preview": "vite preview",
+    "preview:client": "vite preview",
     "server": "node server/index.js",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "start:api": "node server/index.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
