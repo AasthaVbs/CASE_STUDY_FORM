@@ -549,6 +549,12 @@ async function ensureAdminUser() {
   console.log(`Seeded admin user: ${email}`)
 }
 
+function redactMongoUri(raw) {
+  const fallback = `mongodb://127.0.0.1:27017`
+  const uri = String(raw || fallback)
+  return uri.replace(/(mongodb(?:\+srv)?:\/\/)(.*?)(@)/, `$1***:***$3`)
+}
+
 function startupDiagnostics(err) {
   const msg = String(err?.message || err || ``)
   const cause = String(err?.cause?.message || ``)
