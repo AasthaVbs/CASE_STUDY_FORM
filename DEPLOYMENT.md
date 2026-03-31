@@ -24,7 +24,7 @@ This app is a **Vite + React** single-page app (SPA) and an **Express + MongoDB*
 
 ### 1. Requirements
 
-- **Node.js** ≥ 18 (see `package.json` `engines`)
+- **Node.js LTS** (recommended 20 or 22). This project pins `>=20 <23` in `package.json` to avoid non-LTS runtime issues.
 - **MongoDB** connection string (Atlas recommended for production)
 
 ### 2. Environment variables (API server)
@@ -183,6 +183,11 @@ You can still serve **`dist/`** from the same Express app as the API (not config
 | Images broken on split deploy | `VITE_API_URL` set at build time; API serves `/images/case-study/...`. |
 | `401` on login | `JWT_SECRET` stable across restarts; same API instance. |
 | Mongo errors | URI, network access, Atlas IP allowlist. |
+
+### Render-specific note
+
+- If logs show Node `25.x`, switch to an LTS runtime (20 or 22). On Render, set `NODE_VERSION=22` in Environment or use a `.nvmrc` with `22`.
+- Then redeploy with `Clear build cache & deploy`.
 
 ---
 
