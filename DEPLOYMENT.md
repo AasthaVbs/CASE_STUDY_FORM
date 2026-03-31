@@ -189,6 +189,26 @@ You can still serve **`dist/`** from the same Express app as the API (not config
 - If logs show Node `25.x`, switch to an LTS runtime (20 or 22). On Render, set `NODE_VERSION=22` in Environment or use a `.nvmrc` with `22`.
 - Then redeploy with `Clear build cache & deploy`.
 
+### Render: separate frontend + backend (recommended)
+
+Use two Render services from the same repo:
+
+1. **Web Service (API)**
+   - Name: `case-study-api`
+   - Build command: `npm ci`
+   - Start command: `npm run start:api`
+   - Env: `MONGODB_URI`, `MONGODB_DB`, `JWT_SECRET`, `CORS_ORIGINS`, `NODE_VERSION=22`
+   - Verify: open `https://<api-domain>/api/health`
+
+2. **Static Site (Frontend)**
+   - Name: `case-study-frontend`
+   - Build command: `npm ci && npm run build:client`
+   - Publish directory: `dist`
+   - Env: `VITE_API_URL=https://<api-domain>`
+   - Add SPA rewrite: `/* -> /index.html`
+
+This repository includes a Render Blueprint file `render.yaml` that defines both services so you do not need to reuse one root/service for both.
+
 ---
 
 ## Security reminders

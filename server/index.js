@@ -195,6 +195,15 @@ app.get(`/api/health`, (_req, res) => {
   res.json({ ok: true, service: `case-study-form-api`, db: `mongodb` })
 })
 
+// Friendly root response so API base URL doesn't appear as a 404.
+app.get(`/`, (_req, res) => {
+  res.json({
+    service: `case-study-form-api`,
+    ok: true,
+    docs: `Use /api/health and /api/* endpoints`,
+  })
+})
+
 app.get(`/api/forms`, authRequired, requireAdmin, async (_req, res, next) => {
   try {
     res.json(await listForms())
@@ -538,12 +547,6 @@ async function ensureAdminUser() {
   const passwordHash = await hashPassword(password)
   await insertUser({ id, email, passwordHash, role: `admin` })
   console.log(`Seeded admin user: ${email}`)
-}
-
-function redactMongoUri(raw) {
-  const fallback = `mongodb://127.0.0.1:27017`
-  const uri = String(raw || fallback)
-  return uri.replace(/(mongodb(?:\+srv)?:\/\/)(.*?)(@)/, `$1***:***$3`)
 }
 
 function startupDiagnostics(err) {
