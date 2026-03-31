@@ -540,6 +540,39 @@ async function ensureAdminUser() {
   console.log(`Seeded admin user: ${email}`)
 }
 
+function redactMongoUri(raw) {
+  const fallback = `mongodb://127.0.0.1:27017`
+  const uri = String(raw || fallback)
+  return uri.replace(/(mongodb(?:\+srv)?:\/\/)(.*?)(@)/, `$1***:***$3`)
+}
+
+function startupDiagnostics(err) {
+  const msg = String(err?.message || err || ``)
+  const cause = String(err?.cause?.message || ``)
+  const combined = `${msg} ${cause}`.toLowerCase()
+  const hints = []
+  if (!process.env.MONGODB_URI) {
+    hints.push(`MONGODB_URI is missing`)
+  }
+  if (!process.env.JWT_SECRET) {
+    hints.push(`JWT_SECRET is missing`)
+  }
+  if (combined.includes(`replicasetnoprimary`) || combined.includes(`serverselection`) || combined.includes(`tls`) || combined.includes(`ssl`)) {
+    hints.push(`MongoDB connectivity/TLS issue: verify Atlas allowlist, DB user/password, and URI encoding for special chars`)
+  }
+  return {
+    node: process.version,
+    env: process.env.NODE_ENV || `development`,
+    host: HOST,
+    port: PORT,
+    mongo: {
+      uri: redactMongoUri(process.env.MONGODB_URI),
+      db: process.env.MONGODB_DB || `case_study_crm`,
+    },
+    hints,
+  }
+}
+
 async function main() {
   await connectDb()
   await seedIfEmpty()
@@ -547,11 +580,13 @@ async function main() {
   await ensureAdminUser()
   app.listen(PORT, HOST, () => {
     console.log(`API listening on http://${HOST}:${PORT}`)
-    console.log(`MongoDB: ${process.env.MONGODB_URI || `mongodb://127.0.0.1:27017`} / ${process.env.MONGODB_DB || `case_study_crm`}`)
+    console.log(`MongoDB: ${redactMongoUri(process.env.MONGODB_URI)} / ${process.env.MONGODB_DB || `case_study_crm`}`)
   })
 }
 
 main().catch((err) => {
+  console.error(`Startup failed`)
+  console.error(startupDiagnostics(err))
   console.error(err)
   process.exit(1)
 })
