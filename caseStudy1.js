@@ -18,10 +18,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
-import InputImage1 from "../../static/image/input1.jpg";
-import InputImage2 from "../../static/image/input2.jpg";
-import OutputImage1 from "../../static/image/output1.jpg";
-import OutputImage2 from "../../static/image/output2.jpg";
 // import { Link } from "gatsby";
 
 const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
@@ -84,10 +80,19 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
       };
 
       try {
-        await Promise.all([
+        const [zohoResult, emailResult] = await Promise.allSettled([
           sendToZoho(formValues),
           sendToEmailJS(formValues)
         ]);
+
+        // Keep Zoho best-effort only; do not block users on CRM sync failures.
+        if (zohoResult.status === "rejected") {
+          console.warn("Zoho sync failed, continuing with EmailJS submission", zohoResult.reason);
+        }
+        if (emailResult.status === "rejected") {
+          throw emailResult.reason;
+        }
+
         setSuccessMsg("Your message has been sent successfully");
         resetForm();
         navigate("/thank-you");
@@ -112,13 +117,12 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
       if (response.ok) {
         const data = await response.json();
         return data.message;
-      } else {
-        console.error("Zoho request failed");
-        throw new Error("Zoho request failed");
       }
+      console.error("Zoho request failed");
+      return null;
     } catch (error) {
       console.error("Failed to make Zoho request", error);
-      throw error;
+      return null;
     }
   };
 
@@ -129,26 +133,17 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
   const { errors, touched } = formikLogin;
 
   const caseStudyPdfUrl =
-  data?.customStoryLayout?.caseStudyPdfUrl || data?.caseStudyPdfUrl || "";
-
+    data?.customStoryLayout?.caseStudyPdfUrl || data?.caseStudyPdfUrl || "";
 
   const isCustomHero = Boolean(data?.customStoryLayout?.useCustomHero);
   const useDefaultHeader = Boolean(data?.customStoryLayout?.useDefaultHeader);
   const useContactHeaderOnly = Boolean(data?.customStoryLayout?.useContactHeaderOnly);
   const centerIntroMetaBelow = Boolean(data?.customStoryLayout?.centerIntroMetaBelow);
 
-  const pe = data?.customStoryLayout?.postExecution
-  const inputFromForm = Array.isArray(pe?.inputImages) ? pe.inputImages.filter(Boolean) : []
-  const outputFromForm = Array.isArray(pe?.outputImages) ? pe.outputImages.filter(Boolean) : []
-  const sliderFallback = Array.isArray(data?.imageSlider?.images) ? data.imageSlider.images.filter(Boolean) : []
+  const postExecutionIo = data?.customStoryLayout?.postExecution;
   const previewImageSets = {
-    input:
-      inputFromForm.length > 0
-        ? inputFromForm
-        : sliderFallback.length > 0
-          ? sliderFallback
-          : [InputImage1, InputImage2],
-    output: outputFromForm.length > 0 ? outputFromForm : [OutputImage1, OutputImage2],
+    input: Array.isArray(postExecutionIo?.inputImages) ? postExecutionIo.inputImages : [],
+    output: Array.isArray(postExecutionIo?.outputImages) ? postExecutionIo.outputImages : [],
   };
   const handlePreviewButtonClick = mode => {
     setActivePreviewMode(mode);
@@ -226,9 +221,6 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
   return (
     <>
       <div className={`case-study-page ${data?.customStoryLayout?.pageClass || ""}`}>
-      <style>{`
-          .case-study-page .call-icon { display: none !important; }
-        `}</style>
         {useContactHeaderOnly ? (
           <div className="case-contact-only-header">
             <HeaderContactOnly />
@@ -269,69 +261,109 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
           }}
         >
           <Container>
-            {data.bannerTitle ? (
-              isCustomHero ? (
-                <Row className="justify-content-start">
-                  <Col lg={7} md={9} xs={12} className="blog-banner case-custom-hero-content">
-                    <h1 className=" case-custom-hero-title">{data.bannerTitle}</h1>
-                  </Col>
-                </Row>
-              ) : (
-                <Col lg={8} xs={12} className="blog-banner text-center mx-auto">
-                  <h1 className="case-custom-hero-title">{data.bannerTitle}</h1>
+            {isCustomHero ? (
+              <Row className="justify-content-start">
+                <Col lg={7} md={9} xs={12} className="blog-banner case-custom-hero-content">
+                  <h1 className=" case-custom-hero-title">{data.bannerTitle}</h1>
                 </Col>
-              )
-            ) : null}
+              </Row>
+            ) : (
+              <Col lg={8} xs={12} className="blog-banner text-center mx-auto">
+                <h1 className="case-custom-hero-title">{data.bannerTitle}</h1>
+              </Col>
+            )}
           </Container>
         </section>
 
-        {caseStudyPdfUrl ? (
-          <div className="success-stories-btn">
-            <a
-              href={caseStudyPdfUrl}
-              className="pdf-fab case-study-pdf-fab"
-              title="Download PDF"
-              aria-label="Download PDF"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa fa-file-pdf" aria-hidden="true" />
-            </a>
-            <style>{`
-                .case-study-page .case-study-pdf-fab {
-                  position: fixed;
-                  right: 0;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  z-index: 9999;
-                  background: #D70416;
-                  color: #fff;
-                  width: 56px;
-                  height: 56px;
-                  border-radius: 50%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  box-shadow: 0 6px 18px rgba(215, 4, 22, 0.35);
-                  text-decoration: none;
-                }
-                .case-study-page .case-study-pdf-fab .fa-file-pdf { font-size: 22px; }
-                .case-study-page .case-study-pdf-fab:hover::after {
-                  content: 'Download PDF';
-                  position: absolute;
-                  right: 0;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  background: #111;
-                  color: #fff;
-                  padding: 6px 10px;
-                  border-radius: 6px;
-                  white-space: nowrap;
-                  font-size: 12px;
-                }
-              `}</style>
-          </div>
-        ) : null}
+        <div className="success-stories-btn">
+          {/* <Button className="main-btn" onClick={handleShow}>Facing similar challenges?</Button> */}
+          <Modal show={show} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+            <Modal.Body className="p-5 p-md-3">
+              <div>
+                <button onClick={handleClose} aria-label="Submit" className="top-closebtn text-dark">
+                  <span className="icon fa fa-times"></span>
+                </button>
+              </div>
+              <div>
+                <div className="mb-5 mb-md-3 text-center pop-up">
+                  <h2 className="heading text-white mb-0" >We’re here to assist you. <br />Reach out to us today!</h2>
+                </div>
+                <Col lg={10} xs={12} className="mx-auto">
+                  <Form className="contact-form p-md-3">
+                    <Row lg={2} xs={1} className="g-2">
+                      <Col>
+                        <Form.Group controlId="exampleForm.ControlInput1">
+                          <Form.Label>Name</Form.Label>
+                          <Form.Control type="text" placeholder="Name" name="full_name" maxLength={25}
+                            value={formikLogin.values.full_name}
+                            onChange={formikLogin.handleChange} />
+                        </Form.Group>
+                        <p className="form-text text-danger mt-lg-2 mb-0 font-size-14 text-uppercase0">
+                          {errors.full_name && touched.full_name ? errors.full_name : null}
+                        </p>
+                      </Col>
+                      <Col>
+                        <Form.Group controlId="exampleForm.ControlInput1">
+                          <PhoneInput
+                            country={'us'}
+                            value={formikLogin.values.mobile_number}
+                            onChange={(phone) => formikLogin.setFieldValue('mobile_number', phone)}
+                            // onChange={formikLogin.handleChange}
+                            inputClass="form-control"
+                            placeholder="Phone number"
+                            name="mobile_number"
+                            maxLength={12}
+                            countryCodeEditable={false}
+                          />
+                        </Form.Group>
+                        <p className="form-text text-danger mt-lg-2 mb-0 font-size-14 text-uppercase0">
+                          {errors.mobile_number && touched.mobile_number ? errors.mobile_number : null}
+                        </p>
+                      </Col>
+                      <Col>
+                        <Form.Group controlId="exampleForm.ControlInput1">
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control type="email" placeholder="Email" name="email" value={formikLogin.values.email} maxLength={64}
+                            onChange={formikLogin.handleChange} />
+                        </Form.Group>
+                        <p className="form-text text-danger mt-lg-2 mb-0 font-size-14 text-uppercase0">
+                          {errors.email && touched.email ? errors.email : null}
+                        </p>
+                      </Col>
+                      <Col>
+                        <Form.Group controlId="exampleForm.ControlInput1">
+                          <Form.Label>Looking for</Form.Label>
+                          <Form.Control type="text" placeholder="Looking for..." name="looking_for" value={formikLogin.values.looking_for} maxLength={25}
+                            onChange={formikLogin.handleChange} />
+                        </Form.Group>
+                        <p className="form-text text-danger mt-lg-2 mb-0 font-size-14 text-uppercase0">
+                          {errors.looking_for && touched.looking_for ? errors.looking_for : null}
+                        </p>
+                      </Col>
+                      <Col lg={12}>
+                        <Form.Group controlId="exampleForm.ControlTextarea1">
+                          <Form.Label>Message</Form.Label>
+                          <Form.Control as="textarea" placeholder="Message" rows={3} name="message" value={formikLogin.values.message}
+                            onChange={formikLogin.handleChange} />
+                        </Form.Group>
+                        <p className="form-text text-danger mt-lg-2 mb-0 font-size-14 text-uppercase0">
+                          {errors.message && touched.message ? errors.message : null}
+                        </p>
+                      </Col>
+                      <Col lg={12} className="text-center text-lg-end">
+                        <Button className="btn btn-light text-white  text-uppercase  px-3 py-2 rounded-pill fs-4 fw-semibold" onClick={() => formikLogin.handleSubmit()} disabled={disable}>
+                          {isLoading ? 'Sending...' : <><span>Send now</span>  <i className="icon ms-1 fa fa-lg fa-long-arrow-alt-right"></i></>}
+                        </Button>
+                      </Col>
+                    </Row>
+                    {successMsg ? <div className="alert alert-success mt-4"> {successMsg} </div> : null}
+                  </Form>
+                </Col>
+              </div>
+
+            </Modal.Body>
+          </Modal>
+        </div>
 
 
         <section className={`${data?.customStoryLayout ? "case-custom-content-section" : ""}`}>
@@ -559,58 +591,58 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
                       alt="Input and output overview"
                     />
                   </div>
-                  <div className="case-custom-io-button-grid">
-                    <div
-                      className="case-custom-io-side case-custom-io-card"
-                    >
-                      {/* <h4 className="case-custom-io-card-title">The Input Drawings We Got</h4> */}
-                      <div className="case-custom-io-thumb-grid">
-                        {previewImageSets.input.map((imgSrc, idx) => (
-                          <Image
-                            key={`input-thumb-${idx}`}
-                            src={imgSrc}
-                            className="case-custom-io-thumb-image"
-                            alt={`Project input example ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-                      <button
-                        type="button"
-                        className="btn case-custom-io-button case-custom-io-button-pill"
-                        onClick={() => handlePreviewButtonClick("input")}
-                      >
-                        <i className="far fa-eye me-2" aria-hidden="true"></i>
-                        View Inputs
-                      </button>
+                  {(previewImageSets.input.length > 0 || previewImageSets.output.length > 0) && (
+                    <div className="case-custom-io-button-grid">
+                      {previewImageSets.input.length > 0 && (
+                        <div className="case-custom-io-side case-custom-io-card">
+                          <div className="case-custom-io-thumb-grid">
+                            {previewImageSets.input.map((imgSrc, idx) => (
+                              <Image
+                                key={`input-thumb-${idx}`}
+                                src={imgSrc}
+                                className="case-custom-io-thumb-image"
+                                alt={`Project input example ${idx + 1}`}
+                              />
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn case-custom-io-button case-custom-io-button-pill"
+                            onClick={() => handlePreviewButtonClick("input")}
+                          >
+                            <i className="far fa-eye me-2" aria-hidden="true"></i>
+                            View Inputs
+                          </button>
+                        </div>
+                      )}
+                      {previewImageSets.output.length > 0 && (
+                        <div className="case-custom-io-side case-custom-io-card">
+                          <div className="case-custom-io-thumb-grid">
+                            {previewImageSets.output.map((imgSrc, idx) => (
+                              <Image
+                                key={`output-thumb-${idx}`}
+                                src={imgSrc}
+                                className="case-custom-io-thumb-image"
+                                alt={`Project output example ${idx + 1}`}
+                              />
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn case-custom-io-button case-custom-io-button-pill"
+                            onClick={() => handlePreviewButtonClick("output")}
+                          >
+                            <i className="far fa-eye me-2" aria-hidden="true"></i>
+                            View Outputs
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    <div
-                      className="case-custom-io-side case-custom-io-card"
-                    >
-                      {/* <h4 className="case-custom-io-card-title">The Output Drawings We Gave</h4> */}
-                      <div className="case-custom-io-thumb-grid">
-                        {previewImageSets.output.map((imgSrc, idx) => (
-                          <Image
-                            key={`output-thumb-${idx}`}
-                            src={imgSrc}
-                            className="case-custom-io-thumb-image"
-                            alt={`Project output example ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-                      <button
-                        type="button"
-                        className="btn case-custom-io-button case-custom-io-button-pill"
-                        onClick={() => handlePreviewButtonClick("output")}
-                      >
-                        <i className="far fa-eye me-2" aria-hidden="true"></i>
-                        View Outputs
-                      </button>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </Container>
             </section>
-            {activePreviewMode && (
+            {activePreviewMode && previewImageSets[activePreviewMode]?.length > 0 && (
               <div
                 className="case-custom-io-overlay"
                 role="dialog"
@@ -700,9 +732,7 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
                 {data.features.featureTile.map((feature, index) => (
                   <Col key={index}>
                     <div className={`text-center h-100 p-5 ${feature.type === "primary" ? "bg-primary bg-opacity-10" : "bg-light"}`}>
-                      {feature.icon ? (
-                        <Image src={feature.icon} width={56} height={56} className="mb-2" alt="" />
-                      ) : null}
+                      <Image src={feature.icon} width={56} height={56} className="mb-2" />
                       <h4 className="mb-0 text-dark">{feature.title}</h4>
                     </div>
                   </Col>
@@ -719,3 +749,4 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
 };
 
 export default CaseStudyComponent;
+
