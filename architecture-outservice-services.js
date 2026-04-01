@@ -41,8 +41,8 @@ const caseStudyData = {
 
     bannerImage: bannerImage,
     bannerImageMobile: bannerImageMobile,
+    bannerTitle: "",
     caseStudyPdfUrl: "https://www.virtualbuildingstudio.com/resources/your-case-study.pdf",
-    // bannerTitle: `From Redlines to Renders: Multi-Family Apartment, Las Vegas`,
     description:
         "A Las Vegas-based architectural design firm engaged our team to support documentation review and design visualization for a multi-family apartment development. The project was executed through a dedicated remote architect embedded within the client’s workflow, enabling fast iteration on documentation updates and facade visualization while maintaining continuous coordination. The result was a clean documentation set and a compelling visual package that enabled the client to move confidently into design approvals and next-stage development.",
     customStoryLayout: {

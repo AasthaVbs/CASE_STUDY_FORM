@@ -79,34 +79,34 @@ async function seedIfEmpty() {
   const id = crypto.randomUUID()
   await insertForm({
     id,
-    slug: `demo-case-study`,
-    title: `Demo case study`,
-    description: `Sample form — replace with your design later.`,
+    slug: `case-study-form`,
+    title: `Case study form`,
+    description: `Fill in the form to generate a case study page.`,
     schema: DEMO_SCHEMA,
   })
-  console.log(`Seeded demo form: demo-case-study`)
+  console.log(`Seeded demo form: case-study-form`)
 }
 
 async function ensureDemoForm() {
   const forms = await listForms()
-  const existing = forms.find((f) => f.slug === `demo-case-study`)
+  const existing = forms.find((f) => f.slug === `case-study-form`)
   if (existing) {
     // Keep demo slug always aligned with latest dynamic schema definition.
     return updateForm(existing.id, {
-      title: `Demo case study`,
-      description: `Sample form — replace with your design later.`,
+      title: `Case study form`,
+      description: `Fill in the form to generate a case study page.`,
       schema: DEMO_SCHEMA,
     })
   }
   const id = crypto.randomUUID()
   await insertForm({
     id,
-    slug: `demo-case-study`,
-    title: `Demo case study`,
-    description: `Sample form — replace with your design later.`,
+    slug: `case-study-form`,
+    title: `Case study form`,
+    description: `Fill in the form to generate a case study page.`,
     schema: DEMO_SCHEMA,
   })
-  return { id, slug: `demo-case-study` }
+  return { id, slug: `case-study-form` }
 }
 
 module.exports = { seedIfEmpty, ensureDemoForm, DEMO_SCHEMA }

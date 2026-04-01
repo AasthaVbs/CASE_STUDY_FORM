@@ -134,6 +134,8 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
 
   const caseStudyPdfUrl =
     data?.customStoryLayout?.caseStudyPdfUrl || data?.caseStudyPdfUrl || "";
+  const bannerTitle = String(data?.bannerTitle || ``).trim();
+  const seoH1 = String(data?.customStoryLayout?.seoH1 || data?.seoH1 || data?.bannerTitle || `Case Study`).trim();
 
   const isCustomHero = Boolean(data?.customStoryLayout?.useCustomHero);
   const useDefaultHeader = Boolean(data?.customStoryLayout?.useDefaultHeader);
@@ -260,18 +262,23 @@ const CaseStudyComponent = ({ data, page = "Contact_Form_Inquiry" }) => {
             paddingTop: isCustomHero ? "0" : undefined,
           }}
         >
+          <h1 className="visually-hidden">{seoH1}</h1>
           <Container>
-            {isCustomHero ? (
-              <Row className="justify-content-start">
-                <Col lg={7} md={9} xs={12} className="blog-banner case-custom-hero-content">
-                  <h1 className=" case-custom-hero-title">{data.bannerTitle}</h1>
-                </Col>
-              </Row>
-            ) : (
-              <Col lg={8} xs={12} className="blog-banner text-center mx-auto">
-                <h1 className="case-custom-hero-title">{data.bannerTitle}</h1>
-              </Col>
-            )}
+            {bannerTitle
+              ? isCustomHero
+                ? (
+                  <Row className="justify-content-start">
+                    <Col lg={7} md={9} xs={12} className="blog-banner case-custom-hero-content">
+                      <h2 className=" case-custom-hero-title">{bannerTitle}</h2>
+                    </Col>
+                  </Row>
+                )
+                : (
+                  <Col lg={8} xs={12} className="blog-banner text-center mx-auto">
+                    <h2 className="case-custom-hero-title">{bannerTitle}</h2>
+                  </Col>
+                )
+              : null}
           </Container>
         </section>
 

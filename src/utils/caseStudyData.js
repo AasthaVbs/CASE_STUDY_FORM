@@ -84,6 +84,7 @@ export function buildCaseStudyDataFromValues(values) {
   const out = {
     pageName: asText(values, `pageName`, ``),
     caseStudyPdfUrl: asText(values, `caseStudyPdfUrl`, ``),
+    bannerTitle: ``,
     bannerImage: asImageUrl(values, `bannerImage`),
     bannerImageMobile: asImageUrl(values, `bannerImageMobile`),
     description: asText(values, `introDescription`, ``),

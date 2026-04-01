@@ -94,6 +94,7 @@ function buildCaseStudyData(rawData) {
   const out = {
     pageName: asText(rawData, `pageName`, ``),
     caseStudyPdfUrl: asText(rawData, `caseStudyPdfUrl`, ``),
+    bannerTitle: ``,
     bannerImage: asImageUrl(rawData, `bannerImage`),
     bannerImageMobile: asImageUrl(rawData, `bannerImageMobile`),
     description: asText(rawData, `introDescription`, ``),
